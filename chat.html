@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat - Tic Tac</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="top-header">
+            <div class="header-left">
+                <img src="assets/logo.png" alt="Tic Tac Logo" class="logo">
+                <span class="app-name">Tic Tac</span>
+            </div>
+            <div class="header-right">
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="material-icons">menu</i>
+                </button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="chat-container">
+                <div class="chat-header">
+                    <h2>Global Chat</h2>
+                    <div class="online-users" id="onlineUsers">
+                        <i class="fas fa-circle" style="color: #4CAF50;"></i>
+                        <span>Online: <span id="onlineCount">0</span></span>
+                    </div>
+                </div>
+
+                <div class="chat-messages" id="globalChatMessages">
+                    <!-- Messages will be populated here -->
+                    <div class="loading-skeleton">
+                        <div class="skeleton-message"></div>
+                        <div class="skeleton-message"></div>
+                        <div class="skeleton-message"></div>
+                    </div>
+                </div>
+
+                <div class="chat-input-area">
+                    <input type="text" id="globalChatInput" placeholder="Type a message..." maxlength="200">
+                    <button id="sendGlobalChatBtn"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </main>
+
+        <nav class="bottom-nav">
+            <a href="dashboard.html" class="nav-item">
+                <i class="material-icons">home</i>
+                <span>Home</span>
+            </a>
+            <a href="play.html" class="nav-item">
+                <i class="material-icons">play_arrow</i>
+                <span>Play</span>
+            </a>
+            <a href="leaderboard.html" class="nav-item">
+                <i class="material-icons">leaderboard</i>
+                <span>Leaderboard</span>
+            </a>
+            <a href="chat.html" class="nav-item active">
+                <i class="material-icons">chat</i>
+                <span>Chat</span>
+            </a>
+            <a href="profile.html" class="nav-item">
+                <i class="material-icons">person</i>
+                <span>Profile</span>
+            </a>
+        </nav>
+
+        <div class="menu-overlay" id="menuOverlay">
+            <div class="menu-content">
+                <div class="menu-header">
+                    <img id="menuAvatar" src="assets/default-avatar.png" alt="Avatar" class="avatar">
+                    <div class="menu-user-info">
+                        <span id="menuUsername">Loading...</span>
+                    </div>
+                </div>
+                <div class="menu-items">
+                    <a href="profile.html" class="menu-item">
+                        <i class="material-icons">person</i>
+                        <span>Profile</span>
+                    </a>
+                    <a href="settings.html" class="menu-item">
+                        <i class="material-icons">settings</i>
+                        <span>Settings</span>
+                    </a>
+                    <button class="menu-item" id="logoutBtn">
+                        <i class="material-icons">logout</i>
+                        <span>Logout</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+    <script src="main.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            TicTac.UI.init();
+            TicTac.Auth.checkAuth();
+            TicTac.Chat.initGlobal();
+            
+            document.getElementById('menuToggle').addEventListener('click', TicTac.UI.toggleMenu);
+            document.getElementById('menuOverlay').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    TicTac.UI.closeMenu();
+                }
+            });
+            
+            document.getElementById('logoutBtn').addEventListener('click', TicTac.Auth.logout);
+            document.getElementById('sendGlobalChatBtn').addEventListener('click', TicTac.Chat.sendGlobalMessage);
+            document.getElementById('globalChatInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    TicTac.Chat.sendGlobalMessage();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

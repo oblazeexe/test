@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard - Tic Tac</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="top-header">
+            <div class="header-left">
+                <img src="assets/logo.png" alt="Tic Tac Logo" class="logo">
+                <span class="app-name">Tic Tac</span>
+            </div>
+            <div class="header-right">
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="material-icons">menu</i>
+                </button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="leaderboard-container">
+                <div class="leaderboard-header">
+                    <h2>Leaderboard</h2>
+                    <div class="leaderboard-filters">
+                        <button class="filter-btn active" data-filter="overall">Overall</button>
+                        <button class="filter-btn" data-filter="wins">Wins</button>
+                        <button class="filter-btn" data-filter="level">Level</button>
+                    </div>
+                </div>
+
+                <div class="leaderboard-content">
+                    <div class="top-players">
+                        <div class="top-player" id="firstPlace">
+                            <div class="medal gold">1</div>
+                            <img src="assets/default-avatar.png" alt="Player" class="avatar">
+                            <div class="player-info">
+                                <span class="username">Loading...</span>
+                                <div class="player-stats">
+                                    <span class="level">Lvl 1</span>
+                                    <span class="wins">0W</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="top-player" id="secondPlace">
+                            <div class="medal silver">2</div>
+                            <img src="assets/default-avatar.png" alt="Player" class="avatar">
+                            <div class="player-info">
+                                <span class="username">Loading...</span>
+                                <div class="player-stats">
+                                    <span class="level">Lvl 1</span>
+                                    <span class="wins">0W</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="top-player" id="thirdPlace">
+                            <div class="medal bronze">3</div>
+                            <img src="assets/default-avatar.png" alt="Player" class="avatar">
+                            <div class="player-info">
+                                <span class="username">Loading...</span>
+                                <div class="player-stats">
+                                    <span class="level">Lvl 1</span>
+                                    <span class="wins">0W</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="rankings-list" id="rankingsList">
+                        <!-- Rankings will be populated here -->
+                        <div class="loading-skeleton">
+                            <div class="skeleton-item"></div>
+                            <div class="skeleton-item"></div>
+                            <div class="skeleton-item"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <nav class="bottom-nav">
+            <a href="dashboard.html" class="nav-item">
+                <i class="material-icons">home</i>
+                <span>Home</span>
+            </a>
+            <a href="play.html" class="nav-item">
+                <i class="material-icons">play_arrow</i>
+                <span>Play</span>
+            </a>
+            <a href="leaderboard.html" class="nav-item active">
+                <i class="material-icons">leaderboard</i>
+                <span>Leaderboard</span>
+            </a>
+            <a href="chat.html" class="nav-item">
+                <i class="material-icons">chat</i>
+                <span>Chat</span>
+            </a>
+            <a href="profile.html" class="nav-item">
+                <i class="material-icons">person</i>
+                <span>Profile</span>
+            </a>
+        </nav>
+
+        <div class="menu-overlay" id="menuOverlay">
+            <div class="menu-content">
+                <div class="menu-header">
+                    <img id="menuAvatar" src="assets/default-avatar.png" alt="Avatar" class="avatar">
+                    <div class="menu-user-info">
+                        <span id="menuUsername">Loading...</span>
+                    </div>
+                </div>
+                <div class="menu-items">
+                    <a href="profile.html" class="menu-item">
+                        <i class="material-icons">person</i>
+                        <span>Profile</span>
+                    </a>
+                    <a href="settings.html" class="menu-item">
+                        <i class="material-icons">settings</i>
+                        <span>Settings</span>
+                    </a>
+                    <button class="menu-item" id="logoutBtn">
+                        <i class="material-icons">logout</i>
+                        <span>Logout</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+    <script src="main.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            TicTac.UI.init();
+            TicTac.Auth.checkAuth();
+            TicTac.Leaderboard.init();
+            
+            document.getElementById('menuToggle').addEventListener('click', TicTac.UI.toggleMenu);
+            document.getElementById('menuOverlay').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    TicTac.UI.closeMenu();
+                }
+            });
+            
+            document.getElementById('logoutBtn').addEventListener('click', TicTac.Auth.logout);
+            
+            // Filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    TicTac.Leaderboard.loadLeaderboard(this.dataset.filter);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
